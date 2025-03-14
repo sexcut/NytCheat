@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <!-- Button Style -->
         <Style TargetType="Button">
             <Setter Property="Template">
                 <Setter.Value>
@@ -22,7 +21,6 @@
             <Setter Property="Cursor" Value="Hand"/>
         </Style>
 
-        <!-- Border Style for Game Selection Panels -->
         <Style x:Key="GameSelectionStyle" TargetType="Border">
             <Setter Property="Background" Value="#181818"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -33,26 +31,22 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Border Style for Selected Game -->
         <Style x:Key="SelectedGameStyle" TargetType="Border">
             <Setter Property="Background" Value="#222222"/>
             <Setter Property="Cursor" Value="Hand"/>
         </Style>
 
-        <!-- TextBlock Style for Game Titles -->
         <Style x:Key="GameTitleStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
 
-        <!-- TextBlock Style for Status Text -->
         <Style x:Key="StatusTextStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="#666666"/>
             <Setter Property="FontSize" Value="12"/>
         </Style>
 
-        <!-- ScrollViewer Style -->
         <Style x:Key="NytCheatScrollViewerStyle" TargetType="ScrollViewer">
             <Setter Property="VerticalScrollBarVisibility" Value="Hidden"/>
             <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
@@ -61,10 +55,8 @@
             <Setter Property="BorderThickness" Value="0"/>
         </Style>
 
-        <!-- Window Background Brush -->
         <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#111111"/>
 
-        <!-- Panel Background Brush -->
         <SolidColorBrush x:Key="PanelBackgroundBrush" Color="#151515"/>
     </Application.Resources>
 </Application>

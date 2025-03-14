@@ -9,16 +9,14 @@ namespace NytCheatMenu
 {
     public partial class MainWindow : Window
     {
-        private string _selectedGame = null; // No default selection
+        private string _selectedGame = null;    
 
         public MainWindow()
         {
             InitializeComponent();
 
-            // Ensure the launch text starts with gray color
             LaunchText.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AAAAAA"));
 
-            // Initialize borders with transparent brushes that can be animated
             CS2SelectedBorder.BorderBrush = new SolidColorBrush(Colors.Transparent);
             VALSelectedBorder.BorderBrush = new SolidColorBrush(Colors.Transparent);
             LaunchSelectedBorder.BorderBrush = new SolidColorBrush(Colors.Transparent);
@@ -51,18 +49,16 @@ namespace NytCheatMenu
 
                 if (hoverBorder != null)
                 {
-                    // Create a new mutable brush instead of trying to animate the existing one
                     SolidColorBrush newBrush = new SolidColorBrush(Colors.Transparent);
                     hoverBorder.BorderBrush = newBrush;
                     hoverBorder.Opacity = 0;
 
-                    // Create and start fade-in animation
                     ColorAnimation colorAnimation = new ColorAnimation();
                     colorAnimation.To = (Color)ColorConverter.ConvertFromString("#3366BB");
                     colorAnimation.Duration = TimeSpan.FromSeconds(0.2);
 
                     DoubleAnimation opacityAnimation = new DoubleAnimation();
-                    opacityAnimation.To = 0.5; // Dim blue
+                    opacityAnimation.To = 0.5;   
                     opacityAnimation.Duration = TimeSpan.FromSeconds(0.2);
 
                     hoverBorder.BeginAnimation(Border.OpacityProperty, opacityAnimation);
@@ -92,14 +88,11 @@ namespace NytCheatMenu
 
                 if (hoverBorder != null)
                 {
-                    // Only fade out if this isn't the selected game
                     if (_selectedGame != game)
                     {
-                        // Create a new mutable brush instead of trying to animate the existing one
                         SolidColorBrush newBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3366BB"));
                         hoverBorder.BorderBrush = newBrush;
 
-                        // Create and start fade-out animation
                         ColorAnimation colorAnimation = new ColorAnimation();
                         colorAnimation.To = Colors.Transparent;
                         colorAnimation.Duration = TimeSpan.FromSeconds(0.3);
@@ -117,10 +110,8 @@ namespace NytCheatMenu
 
         private void Button_MouseEnter(object sender, MouseEventArgs e)
         {
-            // Only show hover effect if a game is selected
             if (_selectedGame != null)
             {
-                // Create a new mutable brush instead of trying to animate the existing one
                 SolidColorBrush newBrush = new SolidColorBrush(Colors.Transparent);
                 LaunchHoverBorder.BorderBrush = newBrush;
                 LaunchHoverBorder.Opacity = 0;
@@ -130,7 +121,7 @@ namespace NytCheatMenu
                 colorAnimation.Duration = TimeSpan.FromSeconds(0.2);
 
                 DoubleAnimation opacityAnimation = new DoubleAnimation();
-                opacityAnimation.To = 0.5; // Dim blue
+                opacityAnimation.To = 0.5;   
                 opacityAnimation.Duration = TimeSpan.FromSeconds(0.2);
 
                 LaunchHoverBorder.BeginAnimation(Border.OpacityProperty, opacityAnimation);
@@ -142,11 +133,9 @@ namespace NytCheatMenu
         {
             if (_selectedGame != null)
             {
-                // Create a new mutable brush instead of trying to animate the existing one
                 SolidColorBrush newBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3366BB"));
                 LaunchHoverBorder.BorderBrush = newBrush;
 
-                // Create and start fade-out animation
                 ColorAnimation colorAnimation = new ColorAnimation();
                 colorAnimation.To = Colors.Transparent;
                 colorAnimation.Duration = TimeSpan.FromSeconds(0.3);
@@ -169,7 +158,6 @@ namespace NytCheatMenu
                 {
                     string clickedGame = clickedBorder.Tag.ToString();
 
-                    // If clicking the already selected game, deselect it
                     if (_selectedGame == clickedGame)
                     {
                         AnimateGameDeselection(_selectedGame);
@@ -178,17 +166,14 @@ namespace NytCheatMenu
                     }
                     else
                     {
-                        // IMPORTANT: If another game was previously selected, explicitly deselect it
                         if (_selectedGame != null)
                         {
                             AnimateGameDeselection(_selectedGame);
                         }
 
-                        // Select the new game
                         _selectedGame = clickedGame;
                         AnimateGameSelection(_selectedGame);
 
-                        // If this is the first selection, animate the launch button
                         if (_selectedGame != null)
                         {
                             AnimateLaunchButtonSelection();
@@ -205,17 +190,15 @@ namespace NytCheatMenu
         {
             Border selectionBorder = game == "CS2" ? CS2SelectedBorder : VALSelectedBorder;
 
-            // Create a new brush for animation with a brighter, more pronounced color
             SolidColorBrush selectionBrush = new SolidColorBrush(Colors.Transparent);
             selectionBorder.BorderBrush = selectionBrush;
 
-            // Animate from hover glow to more pronounced glow
             ColorAnimation colorAnimation = new ColorAnimation();
-            colorAnimation.To = (Color)ColorConverter.ConvertFromString("#4477FF"); // Brighter blue
+            colorAnimation.To = (Color)ColorConverter.ConvertFromString("#4477FF");   
             colorAnimation.Duration = TimeSpan.FromSeconds(0.2);
 
             DoubleAnimation opacityAnimation = new DoubleAnimation();
-            opacityAnimation.To = 1.0; // Full opacity for selected state
+            opacityAnimation.To = 1.0;      
             opacityAnimation.Duration = TimeSpan.FromSeconds(0.2);
 
             selectionBorder.BeginAnimation(Border.OpacityProperty, opacityAnimation);
@@ -227,7 +210,6 @@ namespace NytCheatMenu
             Border selectionBorder = game == "CS2" ? CS2SelectedBorder : VALSelectedBorder;
             Border hoverBorder = game == "CS2" ? CS2HoverBorder : VALHoverBorder;
 
-            // Ensure both hover and selection effects are removed
             ColorAnimation colorAnimation = new ColorAnimation();
             colorAnimation.To = Colors.Transparent;
             colorAnimation.Duration = TimeSpan.FromSeconds(0.3);
@@ -239,7 +221,6 @@ namespace NytCheatMenu
             selectionBorder.BeginAnimation(Border.OpacityProperty, opacityAnimation);
             hoverBorder.BeginAnimation(Border.OpacityProperty, opacityAnimation);
 
-            // Make sure the brushes are not frozen
             SolidColorBrush selBrush = new SolidColorBrush(Colors.Transparent);
             selectionBorder.BorderBrush = selBrush;
             selBrush.BeginAnimation(SolidColorBrush.ColorProperty, colorAnimation);
@@ -248,11 +229,9 @@ namespace NytCheatMenu
 
         private void AnimateLaunchButtonSelection()
         {
-            // Create a new brush for animation
             SolidColorBrush selectionBrush = new SolidColorBrush(Colors.Transparent);
             LaunchSelectedBorder.BorderBrush = selectionBrush;
 
-            // Create and start animations with brighter blue for pronounced effect
             ColorAnimation colorAnimation = new ColorAnimation();
             colorAnimation.To = (Color)ColorConverter.ConvertFromString("#4477FF");
             colorAnimation.Duration = TimeSpan.FromSeconds(0.3);
@@ -268,7 +247,6 @@ namespace NytCheatMenu
 
         private void AnimateLaunchButtonDeselection()
         {
-            // Create fade-out animations
             ColorAnimation colorAnimation = new ColorAnimation();
             colorAnimation.To = Colors.Transparent;
             colorAnimation.Duration = TimeSpan.FromSeconds(0.3);
@@ -285,7 +263,6 @@ namespace NytCheatMenu
         {
             string newButtonText = "Select a game";
 
-            // update based on selection
             if (_selectedGame == "CS2")
             {
                 newButtonText = "Launch Spelling Bee";
@@ -295,20 +272,16 @@ namespace NytCheatMenu
                 newButtonText = "Launch LetterBoxed";
             }
 
-            // animate the text change
             AnimateButtonTextChange(newButtonText);
         }
 
         private void AnimateButtonTextChange(string newText)
         {
-            // stop running animations first
             LaunchText.BeginAnimation(TextBlock.OpacityProperty, null);
             NewLaunchText.BeginAnimation(TextBlock.OpacityProperty, null);
 
-            // set up the new text with no opacity
             NewLaunchText.Text = newText;
 
-            // Set the appropriate color for the new text
             if (_selectedGame == null)
             {
                 NewLaunchText.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AAAAAA"));
@@ -318,30 +291,24 @@ namespace NytCheatMenu
                 NewLaunchText.Foreground = new SolidColorBrush(Colors.White);
             }
 
-            // create fade out animation for current text
             DoubleAnimation fadeOutAnimation = new DoubleAnimation();
-            fadeOutAnimation.From = LaunchText.Opacity; // use current opacity instead of hardcoded value
+            fadeOutAnimation.From = LaunchText.Opacity;        
             fadeOutAnimation.To = 0.0;
             fadeOutAnimation.Duration = TimeSpan.FromSeconds(0.2);
 
-            // create fade in animation for new text
             DoubleAnimation fadeInAnimation = new DoubleAnimation();
             fadeInAnimation.From = 0.0;
             fadeInAnimation.To = 1.0;
             fadeInAnimation.Duration = TimeSpan.FromSeconds(0.2);
 
-            // set up completed event to switch the texts
             fadeOutAnimation.Completed += (s, e) => {
-                // Swap text and reset animation
                 LaunchText.Text = newText;
                 LaunchText.Opacity = 1.0;
                 NewLaunchText.Opacity = 0.0;
 
-                // Transfer the foreground color as well
                 LaunchText.Foreground = NewLaunchText.Foreground.Clone();
             };
 
-            // Start the animations
             LaunchText.BeginAnimation(TextBlock.OpacityProperty, fadeOutAnimation);
             NewLaunchText.BeginAnimation(TextBlock.OpacityProperty, fadeInAnimation);
         }
@@ -358,18 +325,16 @@ namespace NytCheatMenu
             switch (_selectedGame)
             {
                 case "CS2":
-                    // Launch Spelling Bee window
                     SpellingBeeWindow spellingBeeWindow = new SpellingBeeWindow();
                     spellingBeeWindow.Owner = this;
                     spellingBeeWindow.Show();
-                    this.Hide(); // Optional: hide the main window while cheat window is open
+                    this.Hide();           
                     break;
                 case "VAL":
-                    // Launch LetterBoxed window
             LetterBoxedWindow letterBoxedWindow = new LetterBoxedWindow();
             letterBoxedWindow.Owner = this;
             letterBoxedWindow.Show();
-            this.Hide(); // Optional: hide the main window while cheat window is open
+            this.Hide();           
             break;
                 default:
                     MessageBox.Show("Please select a game first.");
