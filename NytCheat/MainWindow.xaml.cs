@@ -365,9 +365,12 @@ namespace NytCheatMenu
                     this.Hide(); // Optional: hide the main window while cheat window is open
                     break;
                 case "VAL":
-                    MessageBox.Show("Launching LetterBoxed...");
-                    // Add actual launch code here
-                    break;
+                    // Launch LetterBoxed window
+            LetterBoxedWindow letterBoxedWindow = new LetterBoxedWindow();
+            letterBoxedWindow.Owner = this;
+            letterBoxedWindow.Show();
+            this.Hide(); // Optional: hide the main window while cheat window is open
+            break;
                 default:
                     MessageBox.Show("Please select a game first.");
                     break;

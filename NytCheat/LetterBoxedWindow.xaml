@@ -1,0 +1,205 @@
+﻿<Window x:Class="NytCheatMenu.LetterBoxedWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="LetterBoxed Helper" Height="600" Width="800"
+        Background="#111111" WindowStyle="None" 
+        ResizeMode="NoResize" BorderThickness="1" BorderBrush="#222222">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title Bar -->
+        <Border Grid.Row="0" Background="#151515" MouseDown="TitleBar_MouseDown">
+            <Grid>
+                <TextBlock Text="NytCheat - LetterBoxed" Foreground="White" 
+                           FontSize="14" VerticalAlignment="Center" 
+                           HorizontalAlignment="Center"/>
+                <Button Content="✕" HorizontalAlignment="Right" 
+                        Width="30" Background="Transparent" 
+                        BorderThickness="0" Foreground="White"
+                        Click="CloseButton_Click"/>
+                <Button Content="—" HorizontalAlignment="Right" 
+                        Width="30" Margin="0,0,30,0" Background="Transparent" 
+                        BorderThickness="0" Foreground="White"
+                        Click="MinimizeButton_Click"/>
+            </Grid>
+        </Border>
+
+        <!-- Blue Line Below Title Bar -->
+        <Rectangle Grid.Row="0" Height="1" VerticalAlignment="Bottom" Fill="#0078D7"/>
+
+        <!-- Main Content Area -->
+        <Grid Grid.Row="1" Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Input Section -->
+            <Border Grid.Row="0" Background="#151515" Padding="15" Margin="0,0,0,15">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Vertical">
+                        <TextBlock Text="Enter LetterBoxed Letters" Foreground="White" 
+                                   FontSize="16" Margin="0,0,0,10"/>
+
+                        <!-- Top Side -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="Top Side:" Foreground="#AAAAAA" 
+                                       FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBox x:Name="TopSideInput" Width="100" Height="30" 
+                                     Background="#222222" Foreground="#4CAF50" FontSize="16" 
+                                     BorderThickness="1" BorderBrush="#333333" 
+                                     VerticalContentAlignment="Center"
+                                     MaxLength="3" CharacterCasing="Upper"/>
+                        </StackPanel>
+
+                        <!-- Right Side -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="Right Side:" Foreground="#AAAAAA" 
+                                       FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBox x:Name="RightSideInput" Width="100" Height="30" 
+                                     Background="#222222" Foreground="#4CAF50" FontSize="16" 
+                                     BorderThickness="1" BorderBrush="#333333" 
+                                     VerticalContentAlignment="Center"
+                                     MaxLength="3" CharacterCasing="Upper"/>
+                        </StackPanel>
+
+                        <!-- Bottom Side -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="Bottom Side:" Foreground="#AAAAAA" 
+                                       FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBox x:Name="BottomSideInput" Width="100" Height="30" 
+                                     Background="#222222" Foreground="#4CAF50" FontSize="16" 
+                                     BorderThickness="1" BorderBrush="#333333" 
+                                     VerticalContentAlignment="Center"
+                                     MaxLength="3" CharacterCasing="Upper"/>
+                        </StackPanel>
+
+                        <!-- Left Side -->
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Left Side:" Foreground="#AAAAAA" 
+                                       FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBox x:Name="LeftSideInput" Width="100" Height="30" 
+                                     Background="#222222" Foreground="#4CAF50" FontSize="16" 
+                                     BorderThickness="1" BorderBrush="#333333" 
+                                     VerticalContentAlignment="Center"
+                                     MaxLength="3" CharacterCasing="Upper"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Button Column with fixed height Grid -->
+                    <Grid Grid.Column="1" Margin="15,0,0,0" Height="160">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="35"/>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="35"/>
+                            <RowDefinition Height="5"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Find Solutions Button -->
+                        <Button Grid.Row="0" Content="Find Solutions" Width="120"
+                                Background="#222222" Foreground="White" Padding="10,5" 
+                                BorderThickness="1" BorderBrush="#333333"
+                                Click="FindSolutions_Click"/>
+
+                        <!-- Custom Dictionary Button -->
+                        <Button Grid.Row="2" Content="load custom wordlist" Width="120"
+                                Background="#222222" Foreground="#AAAAAA" Padding="10,5" 
+                                BorderThickness="1" BorderBrush="#333333"
+                                Click="LoadCustomDictionary_Click"/>
+
+                        <!-- Dictionary Status -->
+                        <TextBlock Grid.Row="4" x:Name="DictionaryStatusText" 
+                                   Text="using default wordlist" 
+                                   Foreground="#666666" FontSize="11" TextWrapping="Wrap"
+                                   TextAlignment="Center"
+                                   Height="30" MinHeight="30"/>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- Status Message Area -->
+            <TextBlock x:Name="StatusMessageText" 
+                       Grid.Row="1" 
+                       Foreground="#AAAAAA" 
+                       FontSize="14"
+                       TextWrapping="Wrap"
+                       Height="42"
+                       MinHeight="42"
+                       TextAlignment="Center"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Margin="0,0,0,15"/>
+
+            <!-- Stats Section -->
+            <Border Grid.Row="2" Background="#151515" Padding="15" Margin="0,0,0,15">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                        <TextBlock Text="Solutions Found" Foreground="#AAAAAA" FontSize="12"/>
+                        <TextBlock x:Name="SolutionsFoundText" Text="0" Foreground="White" FontSize="18"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="0,0,20,0">
+                        <TextBlock Text="Valid Words" Foreground="#AAAAAA" FontSize="12"/>
+                        <TextBlock x:Name="ValidWordsText" Text="0" Foreground="White" FontSize="18"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Time to Solve" Foreground="#AAAAAA" FontSize="12"/>
+                        <TextBlock x:Name="SolveTimeText" Text="0ms" Foreground="#AAAAAA" FontSize="18"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Results Section -->
+            <Border Grid.Row="3" Background="#151515" Padding="15">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Title for solutions -->
+                    <TextBlock Grid.Column="0" Text="Two-Word Solutions" 
+                               Foreground="White" FontSize="16" FontWeight="Bold"
+                               Margin="0,0,0,10" HorizontalAlignment="Center"/>
+
+                    <!-- Title for valid words -->
+                    <TextBlock Grid.Column="1" Text="Valid Words" 
+                               Foreground="White" FontSize="16" FontWeight="Bold"
+                               Margin="0,0,0,10" HorizontalAlignment="Center"/>
+
+                    <!-- Solutions -->
+                    <ScrollViewer Grid.Row="0" Grid.Column="0" Margin="0,30,5,0" 
+                                  VerticalScrollBarVisibility="Hidden"
+                                  PanningMode="VerticalOnly">
+                        <StackPanel x:Name="SolutionsList" Orientation="Vertical"/>
+                    </ScrollViewer>
+
+                    <!-- Valid Words -->
+                    <ScrollViewer Grid.Row="0" Grid.Column="1" Margin="5,30,0,0" 
+                                  VerticalScrollBarVisibility="Hidden"
+                                  PanningMode="VerticalOnly">
+                        <StackPanel x:Name="ValidWordsList" Orientation="Vertical"/>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>
