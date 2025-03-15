@@ -134,7 +134,5 @@
                 </Button>
             </Border>
         </Grid>
-
-        <Rectangle Grid.Row="2" Height="1" VerticalAlignment="Bottom" Fill="#0078D7"/>
     </Grid>
 </Window>

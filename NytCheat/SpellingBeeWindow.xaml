@@ -43,10 +43,10 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="0" Orientation="Vertical">
-                        <TextBlock Text="Enter Spelling Bee Letters" Foreground="White" 
+                        <TextBlock Text="enter Spelling Bee letters" Foreground="White" 
                        FontSize="16" Margin="0,0,0,10"/>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <TextBlock Text="Center Letter:" Foreground="#AAAAAA" 
+                            <TextBlock Text="center letter:" Foreground="Orange" 
                            FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
                             <TextBox x:Name="CenterLetterInput" Width="30" Height="30" 
                          Background="#222222" Foreground="Orange" FontSize="16" 
@@ -55,7 +55,7 @@
                          MaxLength="1" CharacterCasing="Upper"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Outer Letters:" Foreground="#AAAAAA" 
+                            <TextBlock Text="outer letters:" Foreground="#AAAAAA" 
                            FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
                             <TextBox x:Name="OuterLettersInput" Width="150" Height="30" 
                          Background="#222222" Foreground="White" FontSize="16" 
@@ -66,19 +66,20 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Margin="15,0,0,0">
-                        <Button Content="Find Words" Width="120" Height="35"
+                        <Button Content="find words" Width="120" Height="35"
                     Background="#222222" Foreground="White" Padding="10,5" 
                     BorderThickness="1" BorderBrush="#333333"
                     Click="FindWords_Click"/>
 
                         <Button Content="load custom wordlist" Width="120" Margin="0,10,0,0" 
-                    Background="#222222" Foreground="#AAAAAA" Padding="10,5" 
+                    Background="#222222" Foreground="White" Padding="10,5" 
                     BorderThickness="1" BorderBrush="#333333" Height="35"
                     Click="LoadCustomDictionary_Click"/>
 
                         <TextBlock x:Name="DictionaryStatusText" Text="using default wordlist" 
                      Foreground="#666666" FontSize="11" TextWrapping="Wrap"
                      TextAlignment="Center" Margin="0,5,0,0"/>
+
                     </StackPanel>
                 </Grid>
             </Border>
@@ -94,24 +95,26 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="0" Margin="0,0,20,0">
-                        <TextBlock Text="Total Words" Foreground="#AAAAAA" FontSize="12"/>
+                        <TextBlock Text="total words" Foreground="#AAAAAA" FontSize="12"/>
                         <TextBlock x:Name="TotalWordsText" Text="0" Foreground="White" FontSize="18"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Margin="0,0,20,0">
-                        <TextBlock Text="Points" Foreground="#AAAAAA" FontSize="12"/>
+                        <TextBlock Text="points" Foreground="#AAAAAA" FontSize="12"/>
                         <TextBlock x:Name="PointsText" Text="0" Foreground="White" FontSize="18"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="2" Margin="0,0,20,0">
-                        <TextBlock Text="Pangrams" Foreground="#AAAAAA" FontSize="12"/>
+                        <TextBlock Text="pangrams" Foreground="#AAAAAA" FontSize="12"/>
                         <TextBlock x:Name="PangramsText" Text="0" Foreground="Orange" FontSize="18"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="3">
-                        <TextBlock Text="Perfect Score" Foreground="#AAAAAA" FontSize="12"/>
-                        <TextBlock x:Name="PerfectScoreText" Text="No" Foreground="#AAAAAA" FontSize="18"/>
-                    </StackPanel>
+                    
+                    <Button Content="save results" Width="120" Height="35"
+Background="#222222" Foreground="White" Padding="10,5" 
+BorderThickness="1" BorderBrush="#333333"
+            Click="SaveResults_Click" Grid.Column="3" Margin="400,2,-520,3"/>
+
                 </Grid>
             </Border>
 

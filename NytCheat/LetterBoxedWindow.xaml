@@ -45,11 +45,11 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="0" Orientation="Vertical">
-                        <TextBlock Text="Enter LetterBoxed Letters" Foreground="White" 
+                        <TextBlock Text="enter LetterBoxed letters" Foreground="White" 
                                    FontSize="16" Margin="0,0,0,10"/>
 
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <TextBlock Text="Top Side:" Foreground="#AAAAAA" 
+                            <TextBlock Text="top side:" Foreground="#AAAAAA" 
                                        FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
                             <TextBox x:Name="TopSideInput" Width="100" Height="30" 
                                      Background="#222222" Foreground="#4CAF50" FontSize="16" 
@@ -59,7 +59,7 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <TextBlock Text="Right Side:" Foreground="#AAAAAA" 
+                            <TextBlock Text="right side:" Foreground="#AAAAAA" 
                                        FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
                             <TextBox x:Name="RightSideInput" Width="100" Height="30" 
                                      Background="#222222" Foreground="#4CAF50" FontSize="16" 
@@ -69,7 +69,7 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <TextBlock Text="Bottom Side:" Foreground="#AAAAAA" 
+                            <TextBlock Text="bottom side:" Foreground="#AAAAAA" 
                                        FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
                             <TextBox x:Name="BottomSideInput" Width="100" Height="30" 
                                      Background="#222222" Foreground="#4CAF50" FontSize="16" 
@@ -79,7 +79,7 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Left Side:" Foreground="#AAAAAA" 
+                            <TextBlock Text="left side:" Foreground="#AAAAAA" 
                                        FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
                             <TextBox x:Name="LeftSideInput" Width="100" Height="30" 
                                      Background="#222222" Foreground="#4CAF50" FontSize="16" 
@@ -98,13 +98,13 @@
                             <RowDefinition Height="30"/>
                         </Grid.RowDefinitions>
 
-                        <Button Grid.Row="0" Content="Find Solutions" Width="120"
+                        <Button Grid.Row="0" Content="find solutions" Width="120"
                                 Background="#222222" Foreground="White" Padding="10,5" 
                                 BorderThickness="1" BorderBrush="#333333"
                                 Click="FindSolutions_Click" Margin="0,-12,0,11"/>
 
                         <Button Content="load custom wordlist" Width="120"
-                                Background="#222222" Foreground="#AAAAAA" Padding="10,5" 
+                                Background="#222222" Foreground="White" Padding="10,5" 
                                 BorderThickness="1" BorderBrush="#333333"
                                 Click="LoadCustomDictionary_Click" Margin="0,34,0,12" Grid.RowSpan="3"/>
 
@@ -113,6 +113,12 @@
                                    Foreground="#666666" FontSize="11" TextWrapping="Wrap"
                                    TextAlignment="Center"
                                    Height="30" MinHeight="30" Margin="0,30,0,10" Grid.RowSpan="3"/>
+
+
+                        <Button Grid.Row="4" Content="save results" Width="120"
+Background="#222222" Foreground="White" Padding="10,5" 
+BorderThickness="1" BorderBrush="#333333"
+Click="SaveResults_Click" Margin="0,53,0,-53"/>
                     </Grid>
                 </Grid>
             </Border>
@@ -128,12 +134,12 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="0" Margin="0,0,20,0">
-                        <TextBlock Text="Solutions Found" Foreground="#AAAAAA" FontSize="12"/>
+                        <TextBlock Text="solutions found" Foreground="#AAAAAA" FontSize="12"/>
                         <TextBlock x:Name="SolutionsFoundText" Text="0" Foreground="White" FontSize="18"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Margin="0,0,20,0">
-                        <TextBlock Text="Valid Words" Foreground="#AAAAAA" FontSize="12"/>
+                        <TextBlock Text="valid words" Foreground="#AAAAAA" FontSize="12"/>
                         <TextBlock x:Name="ValidWordsText" Text="0" Foreground="White" FontSize="18"/>
                     </StackPanel>
 
@@ -148,11 +154,11 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0" Text="Two-Word Solutions" 
+                    <TextBlock Grid.Column="0" Text="two-word solutions" 
                                Foreground="White" FontSize="16" FontWeight="Bold"
                                Margin="0,0,0,10" HorizontalAlignment="Center"/>
 
-                    <TextBlock Grid.Column="1" Text="Valid Words" 
+                    <TextBlock Grid.Column="1" Text="valid words" 
                                Foreground="White" FontSize="16" FontWeight="Bold"
                                Margin="0,0,0,10" HorizontalAlignment="Center"/>
 

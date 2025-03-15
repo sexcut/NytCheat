@@ -50,7 +50,7 @@ namespace NytCheatMenu
                 }
                 else
                 {
-                    DictionaryStatusText.Text = "Dictionary file not found";
+                    DictionaryStatusText.Text = "dictionary file not found";
                     dictionary = new List<string>();
 
                     System.Windows.Threading.DispatcherTimer timer = new System.Windows.Threading.DispatcherTimer();
@@ -64,7 +64,7 @@ namespace NytCheatMenu
                         fadeOutAnimation.Duration = TimeSpan.FromSeconds(0.3);
 
                         fadeOutAnimation.Completed += (s, _) => {
-                            DictionaryStatusText.Text = "No dictionary loaded";
+                            DictionaryStatusText.Text = "no dictionary loaded";
 
                             DoubleAnimation fadeInAnimation = new DoubleAnimation();
                             fadeInAnimation.From = 0.0;
@@ -86,9 +86,9 @@ namespace NytCheatMenu
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading dictionary: {ex.Message}");
+                MessageBox.Show($"error loading dictionary: {ex.Message}");
                 dictionary = new List<string>();
-                ShowAnimatedMessage($"Error loading dictionary: {ex.Message}", DictionaryStatusText, 5.0);
+                ShowAnimatedMessage($"error loading dictionary: {ex.Message}", DictionaryStatusText, 2.3);
 
             }
         }
@@ -105,7 +105,7 @@ namespace NytCheatMenu
 
             fadeOutAnimation.Completed += (s, e) =>
             {
-                DictionaryStatusText.Text = "No dictionary loaded";
+                DictionaryStatusText.Text = "no dictionary loaded";
                 DictionaryStatusText.BeginAnimation(OpacityProperty, null);   
                 DictionaryStatusText.Opacity = 1.0;   
             };
@@ -180,7 +180,7 @@ namespace NytCheatMenu
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
             dlg.DefaultExt = ".txt";
             dlg.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
-            dlg.Title = "Select Custom Dictionary";
+            dlg.Title = "select Custom wordlist";
 
             bool? result = dlg.ShowDialog();
             if (result == true)
@@ -212,14 +212,14 @@ namespace NytCheatMenu
 
             if (string.IsNullOrEmpty(centerLetter))
             {
-                ShowAnimatedMessage("Please enter a center letter.", DictionaryStatusText);
+                ShowAnimatedMessage("please enter a center letter.", DictionaryStatusText, 2.3);
 
                 return;
             }
 
             if (outerLetters.Length > 6)
             {
-                MessageBox.Show("You can only have up to 6 outer letters.");
+                MessageBox.Show("you can only have up to 6 outer letters.");
                 return;
             }
 
@@ -229,7 +229,99 @@ namespace NytCheatMenu
 
             DisplayResults();
         }
+        private void SaveResults_Click(object sender, RoutedEventArgs e)
+        {
+            // Initialize collections if null to prevent NullReferenceException
+            if (validWords == null)
+                validWords = new List<string>();
 
+            // Check if there's anything to save
+            if (validWords.Count == 0)
+            {
+                ShowAnimatedMessage("No results to save", DictionaryStatusText, 2.3);
+                return;
+            }
+
+            // Create SaveFileDialog
+            Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog();
+            saveFileDialog.Filter = "Text Files (*.txt)|*.txt";
+            saveFileDialog.DefaultExt = "txt";
+            saveFileDialog.Title = "save Spelling Bee results";
+            saveFileDialog.FileName = "spelling bee results";
+
+            // Show dialog and process result
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    // Get the letters for determining pangrams
+                    string centerLetter = CenterLetterInput.Text.Trim().ToUpper();
+                    string outerLetters = OuterLettersInput.Text.Trim().ToUpper();
+                    string allLetters = centerLetter + outerLetters;
+
+                    using (StreamWriter writer = new StreamWriter(saveFileDialog.FileName))
+                    {
+                        // Write header
+                        writer.WriteLine("Spelling Bee results - " + DateTime.Now.ToString());
+                        writer.WriteLine($"center letter: {centerLetter}");
+                        writer.WriteLine($"outer letters: {outerLetters}");
+                        writer.WriteLine();
+
+                        // Write statistics
+                        writer.WriteLine("STATISTICS:");
+                        writer.WriteLine("-----------");
+                        writer.WriteLine($"total words: {validWords.Count}");
+
+                        // Calculate total points
+                        int totalPoints = 0;
+                        int pangrams = 0;
+                        foreach (string word in validWords)
+                        {
+                            bool isPangram = IsPangram(word, allLetters);
+                            int points = (word.Length == 4) ? 1 : word.Length;
+                            if (isPangram)
+                            {
+                                points += 7;
+                                pangrams++;
+                            }
+                            totalPoints += points;
+                        }
+
+                        writer.WriteLine($"total Points: {totalPoints}");
+                        writer.WriteLine($"pangrams: {pangrams}");
+                        writer.WriteLine();
+
+                        // Write all words, marking pangrams
+                        writer.WriteLine("WORDS:");
+                        writer.WriteLine("------");
+
+                        if (validWords.Count > 0)
+                        {
+                            foreach (string word in validWords)
+                            {
+                                bool isPangram = IsPangram(word, allLetters);
+                                if (isPangram)
+                                    writer.WriteLine($"{word} (pangram)");
+                                else
+                                    writer.WriteLine(word);
+                            }
+                        }
+                        else
+                        {
+                            writer.WriteLine("no words found.");
+                        }
+                    }
+
+                    ShowAnimatedMessage("results saved successfully", DictionaryStatusText, 2.3);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"fatal error saving file! {ex.Message}");
+                    ShowAnimatedMessage($"fatal error saving file! {ex.Message}", DictionaryStatusText, 2.3);
+                }
+            }
+        }
+       
         private void ClearResults()
         {
             WordList1.Children.Clear();
@@ -240,7 +332,6 @@ namespace NytCheatMenu
             TotalWordsText.Text = "0";
             PointsText.Text = "0";
             PangramsText.Text = "0";
-            PerfectScoreText.Text = "No";
         }
 
         private void FindValidWords(char centerLetter, string outerLetters)
@@ -303,7 +394,7 @@ namespace NytCheatMenu
         {
             if (validWords.Count == 0)
             {
-                MessageBox.Show("No words found with these letters.");
+                MessageBox.Show("no words found.");
                 return;
             }
 
@@ -353,9 +444,6 @@ namespace NytCheatMenu
             TotalWordsText.Text = validWords.Count.ToString();
             PointsText.Text = totalPoints.ToString();
             PangramsText.Text = pangrams.ToString();
-
-            PerfectScoreText.Text = "No";
-            PerfectScoreText.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AAAAAA"));
         }
 
     }

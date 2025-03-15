@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -62,16 +63,16 @@ namespace NytCheatMenu
 
                     if (isCustomDictionary)
                     {
-                        DictionaryStatusText.Text = $"Using custom dictionary \n ({dictionary.Count:N0} words)";
+                        DictionaryStatusText.Text = $"using custom dictionary \n ({dictionary.Count:N0} words)";
                     }
                     else
                     {
-                        DictionaryStatusText.Text = $"Using default dictionary \n ({dictionary.Count:N0} words)";
+                        DictionaryStatusText.Text = $"using default dictionary \n ({dictionary.Count:N0} words)";
                     }
                 }
                 else
                 {
-                    DictionaryStatusText.Text = "Dictionary file not found";
+                    DictionaryStatusText.Text = "dictionary file not found";
                     dictionary = new List<string>();
 
                     System.Windows.Threading.DispatcherTimer timer = new System.Windows.Threading.DispatcherTimer();
@@ -85,7 +86,7 @@ namespace NytCheatMenu
                         fadeOutAnimation.Duration = TimeSpan.FromSeconds(0.3);
 
                         fadeOutAnimation.Completed += (s, _) => {
-                            DictionaryStatusText.Text = "No dictionary loaded";
+                            DictionaryStatusText.Text = "no dictionary loaded";
 
                             DoubleAnimation fadeInAnimation = new DoubleAnimation();
                             fadeInAnimation.From = 0.0;
@@ -103,7 +104,7 @@ namespace NytCheatMenu
             }
             catch (Exception ex)
             {
-                ShowAnimatedMessage($"Error loading dictionary: {ex.Message}", DictionaryStatusText, 5.0);
+                ShowAnimatedMessage($"error loading dictionary: {ex.Message}", DictionaryStatusText, 2.3);
                 dictionary = new List<string>();
             }
         }
@@ -113,7 +114,7 @@ namespace NytCheatMenu
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
             dlg.DefaultExt = ".txt";
             dlg.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
-            dlg.Title = "Select Custom Dictionary";
+            dlg.Title = "select Custom wordlist";
 
             bool? result = dlg.ShowDialog();
             if (result == true)
@@ -133,7 +134,7 @@ namespace NytCheatMenu
             if (string.IsNullOrEmpty(topSide) || string.IsNullOrEmpty(rightSide) ||
                 string.IsNullOrEmpty(bottomSide) || string.IsNullOrEmpty(leftSide))
             {
-                
+                ShowAnimatedMessage("nothing to solve", DictionaryStatusText, 2.3);
                 return;
             }
 
@@ -156,7 +157,95 @@ namespace NytCheatMenu
 
             DisplayResults(stopwatch.ElapsedMilliseconds);
         }
+        private void SaveResults_Click(object sender, RoutedEventArgs e)
+        {
+            // First check if collections are initialized at all
+            if (twoWordSolutions == null)
+                twoWordSolutions = new List<Tuple<string, string>>();
 
+            if (validWords == null)
+                validWords = new List<string>();
+
+            // Then check if there's anything to save
+            if (twoWordSolutions.Count == 0 && validWords.Count == 0)
+            {
+                ShowAnimatedMessage("no results to save", DictionaryStatusText, 2.3);
+                return;
+            }
+
+            // Create SaveFileDialog
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Text Files (*.txt)|*.txt";
+            saveFileDialog.DefaultExt = "txt";
+            saveFileDialog.Title = "save LetterBoxed results";
+            saveFileDialog.FileName = "letterboxed results";
+            // Show dialog and process result
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    string topSide = TopSideInput.Text.Trim().ToUpper();
+                    string rightSide = RightSideInput.Text.Trim().ToUpper();
+                    string bottomSide = BottomSideInput.Text.Trim().ToUpper();
+                    string leftSide = LeftSideInput.Text.Trim().ToUpper();
+                    using (StreamWriter writer = new StreamWriter(saveFileDialog.FileName))
+                    
+                    {
+                        // Write header
+                        writer.WriteLine("LetterBoxed results - " + DateTime.Now.ToString());
+                        writer.WriteLine($"top side: {topSide}");
+                        writer.WriteLine($"left side: {leftSide}");
+                        writer.WriteLine($"bottom side: {bottomSide}");
+                        writer.WriteLine($"right side: {rightSide}");
+                        writer.WriteLine();
+
+                        writer.WriteLine("STATISTICS:");
+                        writer.WriteLine("-----------");
+                        writer.WriteLine($"total words: {twoWordSolutions.Count}");
+                        writer.WriteLine($"total words: {validWords.Count}");
+                        writer.WriteLine();
+
+
+                        writer.WriteLine("TWO-WORD SOLUTIONS:");
+                        writer.WriteLine("------------------");
+                        if (twoWordSolutions.Count > 0)
+                        {
+                            foreach (var solution in twoWordSolutions)
+                            {
+                                writer.WriteLine($"{solution.Item1} → {solution.Item2}");
+                            }
+                        }
+                        else
+                        {
+                            writer.WriteLine("no two-word solutions found.");
+                        }
+
+                        writer.WriteLine();
+
+                        // Write valid words
+                        writer.WriteLine("VALID WORDS:");
+                        writer.WriteLine("-----------");
+                        if (validWords.Count > 0)
+                        {
+                            foreach (var word in validWords)
+                            {
+                                writer.WriteLine(word);
+                            }
+                        }
+                        else
+                        {
+                            writer.WriteLine("no valid words found.");
+                        }
+                    }
+
+                    ShowAnimatedMessage("results saved successfully", DictionaryStatusText, 2.3);
+                }
+                catch (Exception ex)
+                {
+                    ShowAnimatedMessage($"fatal error saving file! {ex.Message}", DictionaryStatusText, 2.3);
+                }
+            }
+        }
         private void MapLettersToSides(string sideLetters, int sideIndex)
         {
             foreach (char letter in sideLetters)
@@ -251,7 +340,7 @@ namespace NytCheatMenu
             {
                 TextBlock noSolutionsText = new TextBlock
                 {
-                    Text = "No two-word solutions found",
+                    Text = "no two word solutions found",
                     Foreground = new SolidColorBrush(Colors.Gray),
                     FontSize = 14,
                     Margin = new Thickness(0, 0, 0, 5),
@@ -319,7 +408,7 @@ namespace NytCheatMenu
             }
         }
 
-        private void ShowAnimatedMessage(string message, TextBlock targetTextBlock, double displaySeconds = 3.0)
+        private void ShowAnimatedMessage(string message, TextBlock targetTextBlock, double displaySeconds = 2.3)
         {
             string originalText = targetTextBlock.Text;
 
@@ -381,5 +470,7 @@ namespace NytCheatMenu
 
             targetTextBlock.BeginAnimation(OpacityProperty, initialFadeOut);
         }
+
+        
     }
 }
