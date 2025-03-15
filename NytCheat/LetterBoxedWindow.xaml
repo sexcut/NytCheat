@@ -16,6 +16,10 @@
                 <TextBlock Text="NytCheat - LetterBoxed" Foreground="White" 
                            FontSize="14" VerticalAlignment="Center" 
                            HorizontalAlignment="Center"/>
+                <Button Content="&lt;" HorizontalAlignment="Left"
+        Width="34" Background="Transparent" 
+        BorderThickness="0" Foreground="White"
+        Click="ReturnToMenu_Click"/>
                 <Button Content="✕" HorizontalAlignment="Right" 
                         Width="30" Background="Transparent" 
                         BorderThickness="0" Foreground="White"

@@ -32,7 +32,7 @@ namespace NytCheatMenu
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Application.Current.Shutdown();
         }
 
         private void Border_MouseEnter(object sender, MouseEventArgs e)

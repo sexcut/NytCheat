@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,24 +13,52 @@ namespace NytCheatMenu
 {
     public partial class SpellingBeeWindow : Window
     {
-       
         private List<string> dictionary;
         private List<string> validWords;
-        private string currentDictionaryPath = "wordlist.txt";     
+        private string currentDictionaryPath = "default";
 
         public SpellingBeeWindow()
         {
             InitializeComponent();
-            LoadDictionary(currentDictionaryPath);    
+            LoadDictionary(currentDictionaryPath);
         }
 
         private void LoadDictionary(string path)
         {
             try
             {
-                if (File.Exists(path))
+                dictionary = new List<string>();
+
+                if (path == "default")
                 {
-                    dictionary = new List<string>();
+                    Assembly assembly = Assembly.GetExecutingAssembly();
+                    string resourceName = "NytCheat.wordlist.txt";
+
+                    using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+                    {
+                        if (stream == null)
+                        {
+                            ShowAnimatedMessage("embedded worlist not found!", DictionaryStatusText, 3.0);
+                            return;
+                        }
+
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            string line;
+                            while ((line = reader.ReadLine()) != null)
+                            {
+                                if (line.Length >= 4 && line.All(c => char.IsLetter(c)))
+                                {
+                                    dictionary.Add(line.Trim().ToUpper());
+                                }
+                            }
+                        }
+                    }
+
+                    DictionaryStatusText.Text = $"using default wordlist \n ({dictionary.Count:N0} words)";
+                }
+                else if (File.Exists(path))
+                {
                     foreach (string line in File.ReadLines(path))
                     {
                         if (line.Length >= 4 && line.All(c => char.IsLetter(c)))
@@ -38,80 +67,22 @@ namespace NytCheatMenu
                         }
                     }
 
-                    if (path == currentDictionaryPath)
-                    {
-                        DictionaryStatusText.Text = $"using default dictionary \n ({dictionary.Count:N0} words)";
-                    }
-                    else
-                    {
-                        DictionaryStatusText.Text = $"using custom dictionary \n ({dictionary.Count:N0} words)";
-                        currentDictionaryPath = path;
-                    }
+                    DictionaryStatusText.Text = $"using custom wordlist \n ({dictionary.Count:N0} words)";
+                    currentDictionaryPath = path;
                 }
                 else
                 {
-                    DictionaryStatusText.Text = "dictionary file not found";
-                    dictionary = new List<string>();
-
-                    System.Windows.Threading.DispatcherTimer timer = new System.Windows.Threading.DispatcherTimer();
-                    timer.Interval = TimeSpan.FromSeconds(2.5);
-                    timer.Tick += (sender, e) => {
-                        timer.Stop();
-
-                        DoubleAnimation fadeOutAnimation = new DoubleAnimation();
-                        fadeOutAnimation.From = 1.0;
-                        fadeOutAnimation.To = 0.0;
-                        fadeOutAnimation.Duration = TimeSpan.FromSeconds(0.3);
-
-                        fadeOutAnimation.Completed += (s, _) => {
-                            DictionaryStatusText.Text = "no dictionary loaded";
-
-                            DoubleAnimation fadeInAnimation = new DoubleAnimation();
-                            fadeInAnimation.From = 0.0;
-                            fadeInAnimation.To = 1.0;
-                            fadeInAnimation.Duration = TimeSpan.FromSeconds(0.3);
-
-                            DictionaryStatusText.BeginAnimation(TextBlock.OpacityProperty, fadeInAnimation);
-                        };
-
-                        DictionaryStatusText.BeginAnimation(TextBlock.OpacityProperty, fadeOutAnimation);
-                    };
-
-                    timer.Start();
+                    ShowAnimatedMessage($"worlist file not found: {path}", DictionaryStatusText, 3.0);
                 }
-
-
-
-
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"error loading dictionary: {ex.Message}");
+                ShowAnimatedMessage($"fatal error loading dictionary! {ex.Message}", DictionaryStatusText, 2.3);
                 dictionary = new List<string>();
-                ShowAnimatedMessage($"error loading dictionary: {ex.Message}", DictionaryStatusText, 2.3);
-
             }
         }
 
-        private void FadeToNoDictionaryLoaded()
-        {
-            var fadeOutAnimation = new System.Windows.Media.Animation.DoubleAnimation
-            {
-                From = 1.0,
-                To = 0.0,
-                Duration = TimeSpan.FromSeconds(1),
-                AutoReverse = false
-            };
 
-            fadeOutAnimation.Completed += (s, e) =>
-            {
-                DictionaryStatusText.Text = "no dictionary loaded";
-                DictionaryStatusText.BeginAnimation(OpacityProperty, null);   
-                DictionaryStatusText.Opacity = 1.0;   
-            };
-
-            DictionaryStatusText.BeginAnimation(OpacityProperty, fadeOutAnimation);
-        }
         private void ShowAnimatedMessage(string message, TextBlock targetTextBlock, double displaySeconds = 3.0)
         {
             string originalText = targetTextBlock.Text;
@@ -180,7 +151,7 @@ namespace NytCheatMenu
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
             dlg.DefaultExt = ".txt";
             dlg.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
-            dlg.Title = "select Custom wordlist";
+            dlg.Title = "select custom wordlist";
 
             bool? result = dlg.ShowDialog();
             if (result == true)
@@ -197,7 +168,7 @@ namespace NytCheatMenu
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Application.Current.Shutdown();
         }
 
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
@@ -231,48 +202,40 @@ namespace NytCheatMenu
         }
         private void SaveResults_Click(object sender, RoutedEventArgs e)
         {
-            // Initialize collections if null to prevent NullReferenceException
             if (validWords == null)
                 validWords = new List<string>();
 
-            // Check if there's anything to save
             if (validWords.Count == 0)
             {
-                ShowAnimatedMessage("No results to save", DictionaryStatusText, 2.3);
+                ShowAnimatedMessage("no results to save", DictionaryStatusText, 2.3);
                 return;
             }
 
-            // Create SaveFileDialog
             Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog();
             saveFileDialog.Filter = "Text Files (*.txt)|*.txt";
             saveFileDialog.DefaultExt = "txt";
             saveFileDialog.Title = "save Spelling Bee results";
             saveFileDialog.FileName = "spelling bee results";
 
-            // Show dialog and process result
             if (saveFileDialog.ShowDialog() == true)
             {
                 try
                 {
-                    // Get the letters for determining pangrams
                     string centerLetter = CenterLetterInput.Text.Trim().ToUpper();
                     string outerLetters = OuterLettersInput.Text.Trim().ToUpper();
                     string allLetters = centerLetter + outerLetters;
 
                     using (StreamWriter writer = new StreamWriter(saveFileDialog.FileName))
                     {
-                        // Write header
                         writer.WriteLine("Spelling Bee results - " + DateTime.Now.ToString());
                         writer.WriteLine($"center letter: {centerLetter}");
                         writer.WriteLine($"outer letters: {outerLetters}");
                         writer.WriteLine();
 
-                        // Write statistics
                         writer.WriteLine("STATISTICS:");
                         writer.WriteLine("-----------");
                         writer.WriteLine($"total words: {validWords.Count}");
 
-                        // Calculate total points
                         int totalPoints = 0;
                         int pangrams = 0;
                         foreach (string word in validWords)
@@ -291,7 +254,6 @@ namespace NytCheatMenu
                         writer.WriteLine($"pangrams: {pangrams}");
                         writer.WriteLine();
 
-                        // Write all words, marking pangrams
                         writer.WriteLine("WORDS:");
                         writer.WriteLine("------");
 
@@ -321,7 +283,20 @@ namespace NytCheatMenu
                 }
             }
         }
-       
+        private void ReturnToMenu_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.Owner != null)
+            {
+                this.Owner.Show();
+            }
+            else
+            {
+                MainWindow mainWindow = new MainWindow();
+                mainWindow.Show();
+            }
+
+            this.Close();
+        }
         private void ClearResults()
         {
             WordList1.Children.Clear();

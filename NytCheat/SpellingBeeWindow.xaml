@@ -15,6 +15,12 @@
                 <TextBlock Text="NytCheat - Spelling Bee" Foreground="White" 
                            FontSize="14" VerticalAlignment="Center" 
                            HorizontalAlignment="Center"/>
+                
+                <Button Content="&lt;" HorizontalAlignment="Left"
+                Width="41" Background="Transparent" 
+                BorderThickness="0" Foreground="White"
+                Click="ReturnToMenu_Click"/>
+                
                 <Button Content="✕" HorizontalAlignment="Right" 
                         Width="30" Background="Transparent" 
                         BorderThickness="0" Foreground="White"
@@ -109,7 +115,7 @@
                         <TextBlock x:Name="PangramsText" Text="0" Foreground="Orange" FontSize="18"/>
                     </StackPanel>
 
-                    
+
                     <Button Content="save results" Width="120" Height="35"
 Background="#222222" Foreground="White" Padding="10,5" 
 BorderThickness="1" BorderBrush="#333333"

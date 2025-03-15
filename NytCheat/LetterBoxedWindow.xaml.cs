@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Reflection;
 
 namespace NytCheatMenu
 {
@@ -18,7 +19,7 @@ namespace NytCheatMenu
         private Dictionary<char, HashSet<int>> letterSides;
         private List<string> validWords;
         private List<Tuple<string, string>> twoWordSolutions;
-        private string defaultDictionaryPath = "wordlist.txt";
+        private string defaultDictionaryPath = "NytCheat.wordlist.txt";
 
 
         public LetterBoxedWindow()
@@ -35,7 +36,7 @@ namespace NytCheatMenu
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Application.Current.Shutdown();
         }
 
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
@@ -47,28 +48,47 @@ namespace NytCheatMenu
         {
             try
             {
-                if (File.Exists(path))
+                dictionary = new List<string>();
+
+                if (path == defaultDictionaryPath)
                 {
-                    dictionary = new List<string>();
+                    Assembly assembly = Assembly.GetExecutingAssembly();
+                    string resourceName = "NytCheat.wordlist.txt";
+
+                    using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+                    {
+                        if (stream == null)
+                        {
+                            ShowAnimatedMessage("embedded dictionary not found", DictionaryStatusText, 2.3);
+                            return;
+                        }
+
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            string line;
+                            while ((line = reader.ReadLine()) != null)
+                            {
+                                if (line.Length >= 3 && line.All(c => char.IsLetter(c)))
+                                {
+                                    dictionary.Add(line.Trim().ToUpper());
+                                }
+                            }
+                        }
+                    }
+
+                    DictionaryStatusText.Text = $"using default dictionary \n ({dictionary.Count:N0} words)";
+                }
+                else if (File.Exists(path))
+                {
                     foreach (string line in File.ReadLines(path))
                     {
-                        
                         if (line.Length >= 3 && line.All(c => char.IsLetter(c)))
                         {
                             dictionary.Add(line.Trim().ToUpper());
                         }
                     }
 
-                    bool isCustomDictionary = path != defaultDictionaryPath;
-
-                    if (isCustomDictionary)
-                    {
-                        DictionaryStatusText.Text = $"using custom dictionary \n ({dictionary.Count:N0} words)";
-                    }
-                    else
-                    {
-                        DictionaryStatusText.Text = $"using default dictionary \n ({dictionary.Count:N0} words)";
-                    }
+                    DictionaryStatusText.Text = $"using custom dictionary \n ({dictionary.Count:N0} words)";
                 }
                 else
                 {
@@ -76,30 +96,6 @@ namespace NytCheatMenu
                     dictionary = new List<string>();
 
                     System.Windows.Threading.DispatcherTimer timer = new System.Windows.Threading.DispatcherTimer();
-                    timer.Interval = TimeSpan.FromSeconds(2);
-                    timer.Tick += (sender, e) => {
-                        timer.Stop();
-
-                        DoubleAnimation fadeOutAnimation = new DoubleAnimation();
-                        fadeOutAnimation.From = 1.0;
-                        fadeOutAnimation.To = 0.0;
-                        fadeOutAnimation.Duration = TimeSpan.FromSeconds(0.3);
-
-                        fadeOutAnimation.Completed += (s, _) => {
-                            DictionaryStatusText.Text = "no dictionary loaded";
-
-                            DoubleAnimation fadeInAnimation = new DoubleAnimation();
-                            fadeInAnimation.From = 0.0;
-                            fadeInAnimation.To = 1.0;
-                            fadeInAnimation.Duration = TimeSpan.FromSeconds(0.3);
-
-                            DictionaryStatusText.BeginAnimation(TextBlock.OpacityProperty, fadeInAnimation);
-                        };
-
-                        DictionaryStatusText.BeginAnimation(TextBlock.OpacityProperty, fadeOutAnimation);
-                    };
-
-                    timer.Start();
                 }
             }
             catch (Exception ex)
@@ -159,27 +155,23 @@ namespace NytCheatMenu
         }
         private void SaveResults_Click(object sender, RoutedEventArgs e)
         {
-            // First check if collections are initialized at all
             if (twoWordSolutions == null)
                 twoWordSolutions = new List<Tuple<string, string>>();
 
             if (validWords == null)
                 validWords = new List<string>();
 
-            // Then check if there's anything to save
             if (twoWordSolutions.Count == 0 && validWords.Count == 0)
             {
                 ShowAnimatedMessage("no results to save", DictionaryStatusText, 2.3);
                 return;
             }
 
-            // Create SaveFileDialog
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "Text Files (*.txt)|*.txt";
             saveFileDialog.DefaultExt = "txt";
             saveFileDialog.Title = "save LetterBoxed results";
             saveFileDialog.FileName = "letterboxed results";
-            // Show dialog and process result
             if (saveFileDialog.ShowDialog() == true)
             {
                 try
@@ -191,7 +183,6 @@ namespace NytCheatMenu
                     using (StreamWriter writer = new StreamWriter(saveFileDialog.FileName))
                     
                     {
-                        // Write header
                         writer.WriteLine("LetterBoxed results - " + DateTime.Now.ToString());
                         writer.WriteLine($"top side: {topSide}");
                         writer.WriteLine($"left side: {leftSide}");
@@ -222,7 +213,6 @@ namespace NytCheatMenu
 
                         writer.WriteLine();
 
-                        // Write valid words
                         writer.WriteLine("VALID WORDS:");
                         writer.WriteLine("-----------");
                         if (validWords.Count > 0)
@@ -326,6 +316,20 @@ namespace NytCheatMenu
             }
 
             twoWordSolutions.Sort((a, b) => (a.Item1.Length + a.Item2.Length).CompareTo(b.Item1.Length + b.Item2.Length));
+        }
+        private void ReturnToMenu_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.Owner != null)
+            {
+                this.Owner.Show();
+            }
+            else
+            {
+                MainWindow mainWindow = new MainWindow();
+                mainWindow.Show();
+            }
+
+            this.Close();
         }
 
         private void DisplayResults(long elapsedMilliseconds)
