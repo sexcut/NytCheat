@@ -59,7 +59,7 @@ namespace NytCheatMenu
                     {
                         if (stream == null)
                         {
-                            ShowAnimatedMessage("embedded dictionary not found", DictionaryStatusText, 2.3);
+                            ShowAnimatedMessage("embedded wordlist not found", DictionaryStatusText, 2.3);
                             return;
                         }
 
@@ -76,7 +76,7 @@ namespace NytCheatMenu
                         }
                     }
 
-                    DictionaryStatusText.Text = $"using default dictionary \n ({dictionary.Count:N0} words)";
+                    DictionaryStatusText.Text = $"using default wordlist \n ({dictionary.Count:N0} words)";
                 }
                 else if (File.Exists(path))
                 {
@@ -88,11 +88,11 @@ namespace NytCheatMenu
                         }
                     }
 
-                    DictionaryStatusText.Text = $"using custom dictionary \n ({dictionary.Count:N0} words)";
+                    DictionaryStatusText.Text = $"using custom wordlist \n ({dictionary.Count:N0} words)";
                 }
                 else
                 {
-                    DictionaryStatusText.Text = "dictionary file not found";
+                    DictionaryStatusText.Text = "wordlist file not found";
                     dictionary = new List<string>();
 
                     System.Windows.Threading.DispatcherTimer timer = new System.Windows.Threading.DispatcherTimer();
@@ -100,7 +100,7 @@ namespace NytCheatMenu
             }
             catch (Exception ex)
             {
-                ShowAnimatedMessage($"error loading dictionary: {ex.Message}", DictionaryStatusText, 2.3);
+                ShowAnimatedMessage($"error loading wordlist: {ex.Message}", DictionaryStatusText, 2.3);
                 dictionary = new List<string>();
             }
         }
@@ -110,7 +110,7 @@ namespace NytCheatMenu
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
             dlg.DefaultExt = ".txt";
             dlg.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
-            dlg.Title = "select Custom wordlist";
+            dlg.Title = "select custom wordlist";
 
             bool? result = dlg.ShowDialog();
             if (result == true)
@@ -130,7 +130,7 @@ namespace NytCheatMenu
             if (string.IsNullOrEmpty(topSide) || string.IsNullOrEmpty(rightSide) ||
                 string.IsNullOrEmpty(bottomSide) || string.IsNullOrEmpty(leftSide))
             {
-                ShowAnimatedMessage("nothing to solve", DictionaryStatusText, 2.3);
+                ShowAnimatedMessage("there's nothing to solve", DictionaryStatusText, 2.3);
                 return;
             }
 
@@ -192,7 +192,7 @@ namespace NytCheatMenu
 
                         writer.WriteLine("STATISTICS:");
                         writer.WriteLine("-----------");
-                        writer.WriteLine($"total words: {twoWordSolutions.Count}");
+                        writer.WriteLine($"total solutions: {twoWordSolutions.Count}");
                         writer.WriteLine($"total words: {validWords.Count}");
                         writer.WriteLine();
 
