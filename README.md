@@ -1,4 +1,4 @@
-# NytCheat 🧩
+# 🧩 NytCheat
 A minimalist utility to help solve New York Times word puzzles. This tool currently supports both Spelling Bee and LetterBoxed puzzles with a clean, dark-themed interface.
 
 ### ✨ Features
@@ -11,5 +11,5 @@ A minimalist utility to help solve New York Times word puzzles. This tool curren
 ## ⚙️ Requirements
 [.NET  8.0 or higher](https://dotnet.microsoft.com/en-us/download)
 
-# Disclaimer
+# 🥀 Disclaimer
 This is an unofficial tool not affiliated with The New York Times. Use it responsibly to enhance your puzzle-solving experience or when you're stuck.
